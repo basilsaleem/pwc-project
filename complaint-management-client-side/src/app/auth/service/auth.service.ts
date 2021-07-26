@@ -1,7 +1,7 @@
 import {Injectable, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {registrationConfig} from '../../registration/app-registration.config';
-import {AuthDataRequest} from '../authDataRequest';
+import {UserDataRequest} from '../userDataRequest';
 import {JwtAuthData} from '../jwt-auth-data';
 import {AlertService} from '../../alert/alert.service';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
@@ -18,6 +18,7 @@ export class AuthService{
   private accessToke: string;
   private authStatusListener = new Subject<boolean>();
   private adminListener = new Subject<boolean>();
+  private userCreationListener = new Subject<boolean>();
   private isAuthenticated = false;
   private userId: number;
   private isAdmin = false;
@@ -34,6 +35,10 @@ export class AuthService{
       return true;
     }
     return false;
+  }
+
+  getUserCreationListener(): Subject<boolean> {
+    return this.userCreationListener;
   }
   IsAuthenticated(): boolean {
     return this.isAuthenticated;
@@ -54,21 +59,22 @@ export class AuthService{
     return this.accessToke;
   }
 
-  createUser(authData: AuthDataRequest): void {
+  createUser(authData: UserDataRequest): void {
     // tslint:disable-next-line:max-line-length
     const signupEndpoint = registrationConfig.APP_ENDPOINT + registrationConfig.registration.API.VERSION + registrationConfig.registration.API.SIGN_UP;
     this.httpClient.post(signupEndpoint, authData)
       .subscribe(responseData => {
-        console.log(responseData);
+       this.userCreationListener.next(true);
       }, error => {
         if (error.status === 409){
-          console.log(error);
+          this.userCreationListener.next(false);
           this.alert.errorNotification('E-mail address is reserved  please try another email');
         }
+        this.userCreationListener.next(false);
       });
   }
 
-  login(authData: AuthDataRequest): void {
+  login(authData: UserDataRequest): void {
     // tslint:disable-next-line:max-line-length
     const loginEndPoint = registrationConfig.APP_ENDPOINT + registrationConfig.registration.API.VERSION + registrationConfig.registration.API.LOGIN;
     this.httpClient.post<JwtAuthData>(loginEndPoint, authData)

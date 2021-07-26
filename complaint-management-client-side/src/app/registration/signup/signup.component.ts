@@ -19,7 +19,7 @@ export class SignupComponent implements OnInit {
     if (forms.invalid){
       return;
     }
-    const authData = {email: forms.value.email, password: forms.value.password};
+    const authData = {email: forms.value.email, password: forms.value.password, role: 'user'};
     this.authService.createUser(authData);
   }
 }

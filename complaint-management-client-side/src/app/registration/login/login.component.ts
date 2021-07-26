@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {AuthService} from '../../auth/service/auth.service';
-import {AuthDataRequest} from '../../auth/authDataRequest';
+import {UserDataRequest} from '../../auth/userDataRequest';
 import {AlertService} from '../../alert/alert.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
     if (form.invalid) {
       return;
     }
-    const auth: AuthDataRequest = {email: form.value.email, password: form.value.password};
+    const auth: UserDataRequest = {email: form.value.email, password: form.value.password, role: 'user'};
     this.authService.login(auth);
   }
 }

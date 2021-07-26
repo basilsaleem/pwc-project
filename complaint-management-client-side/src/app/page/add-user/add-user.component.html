@@ -1,34 +1,28 @@
 <h2 mat-dialog-title>Add User</h2>
-<mat-dialog-content class="mat-typography">
-  <form (ngSubmit)="onAddUser(formElement)" #formElement = "ngForm" ngForm>
-    <mat-form-field class="form-group m-1">
-      <input matInput type="text"  name="first_name" placeholder="First Name" required="required">
-    </mat-form-field>
-    <mat-form-field class="form-group m-1">
-      <input matInput type="text"  name="last_name" placeholder="Last Name" required="required">
-    </mat-form-field>
-    <mat-form-field >
-      <input matInput type="email"  name="email" placeholder="Email" required="required" ngModel >
-    </mat-form-field>
-    <mat-form-field class="form-group m-1">
-      <input matInput type="password"  name="password" placeholder="Password" required="required">
-    </mat-form-field>
+<mat-dialog-content [formGroup]="form" class="mat-typography">
 
-    <mat-form-field appearance="standard">
-      <mat-label>Select an option</mat-label>
-      <mat-select  #selectElement >
-        <mat-option *ngFor="let role of roles" [value]="role.name" >{{role.name}}</mat-option>
+  <mat-form-field>
+    <input formControlName="email" matInput name="email" placeholder="Email" required="required" type="email" email>
+    <mat-error *ngIf="form.controls['email'].invalid">Invalid email</mat-error>
+  </mat-form-field>
 
-      </mat-select>
-    </mat-form-field>
+  <mat-form-field class="form-group m-1">
+    <input matInput type="password"  name="password" placeholder="Password" required="required" formControlName="password">
+    <mat-error *ngIf="form.controls['password'].invalid">Password should be at least 8 characters and 16 at max </mat-error>
+  </mat-form-field>
 
-    <div class="form-group">
-      <button mat-button type="submit" class="btn btn-success btn-lg btn-block">Register Now</button>
-    </div>
-  </form>
+  <mat-form-field appearance="standard">
+    <mat-label>Select an option</mat-label>
+    <mat-select formControlName="role" >
+      <mat-option *ngFor="let role of roles" [value]="role.name">{{role.name}}</mat-option>
+
+    </mat-select>
+    <mat-error *ngIf="form.controls['role'].invalid">Please select user role</mat-error>
+  </mat-form-field>
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Add</button>
+  <button (click)="onClose()" mat-button mat-dialog-close>Cancel</button>
+  <button (click)="submit()"  mat-button>Add</button>
+
 </mat-dialog-actions>

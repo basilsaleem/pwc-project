@@ -1,7 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {Component, Inject, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, NgForm, Validators} from '@angular/forms';
 import {Role} from '../model/role';
 import {RoleService} from '../service/role.service';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {AuthService} from '../../auth/service/auth.service';
+import {UserDataRequest} from '../../auth/userDataRequest';
+import {AlertService} from '../../alert/alert.service';
+
 
 @Component({
   selector: 'app-add-user',
@@ -9,10 +14,28 @@ import {RoleService} from '../service/role.service';
   styleUrls: ['./add-user.component.css']
 })
 export class AddUserComponent implements OnInit {
-  roles: Role[];
+  roles: Role[] = [];
+  form: FormGroup;
+  email = '';
+  password = '';
+  role = '';
 
+  constructor(private roleService: RoleService,
+              private dialog: MatDialogRef<AddUserComponent>,
+              @Inject(MAT_DIALOG_DATA) data, fb: FormBuilder,
+              private authService: AuthService,
+              private alertService: AlertService) {
+    this.form = new FormGroup({
+      email: new FormControl(),
+      password: new FormControl(),
+      role: new FormControl()
+    });
+    this.form = fb.group({
+      email: this.email ,
+      password: [this.password, [Validators.required, Validators.minLength(8), Validators.maxLength(16)]],
+      role: [this.role, [Validators.required]]
+    });
 
-  constructor(private roleService: RoleService) {
   }
 
   ngOnInit(): void {
@@ -27,5 +50,26 @@ export class AddUserComponent implements OnInit {
 
   onAddUser(formElement: NgForm): void {
     const authData = {email: formElement.value.email, password: formElement.value.password};
+  }
+
+  onClose(){
+    this.dialog.close(true);
+  }
+
+  submit(): void {
+    if (this.form.invalid){
+      return;
+    }
+    const userData: UserDataRequest = {email: this.form.value.email, password: this.form.value.password, role: 'user'};
+
+    this.authService.createUser(userData);
+
+    this.authService.getUserCreationListener().subscribe(isCreated => {
+      if (isCreated){
+        this.dialog.close(true);
+      }else{
+        this.alertService.errorNotification('E-mail address is reserved please try another email');
+      }
+    });
   }
 }

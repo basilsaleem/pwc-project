@@ -37,7 +37,7 @@ public class UserControllerImpl<T extends User> implements UserController<T> {
     public T registerByUsernameAndPassword(@Valid @RequestBody @NonNull LoginForm userInfo) {
 
         userUtil.checkDuplicateEmail(userInfo.getEmail());
-        User user = userUtil.prepareUserForCreate(userInfo, RoleType.findByName(userInfo.getUserType()));
+        User user = userUtil.prepareUserForCreate(userInfo, RoleType.findByName(userInfo.getRole()));
 
         return (T) userRepository.save(user);
     }

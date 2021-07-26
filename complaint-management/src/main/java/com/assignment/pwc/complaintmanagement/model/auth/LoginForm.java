@@ -10,17 +10,17 @@ public class LoginForm {
     @Size(min = 8, max = 16, message = "Password should be 8 character minimum and 16 max")
     private String password;
 
-    private String userType;
+    private String role;
 
-    public LoginForm(String email, String password, String userType) {
+    public LoginForm(String email, String password, String role) {
         this.email = email;
         this.password = password;
-        this.userType = userType;
+        this.role = role;
     }
 
 
-    public String getUserType() {
-        return userType;
+    public String getRole() {
+        return role;
     }
 
     public String getEmail() {

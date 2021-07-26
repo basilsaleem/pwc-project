@@ -1,0 +1,30 @@
+
+<mat-toolbar class="pwc-bk-color">
+
+   <div class="pwc-icon">
+     <a>PWC</a>
+   </div>
+
+   <span class="example-spacer text-center"> Pwc Complaint Portal System</span>
+
+  <ul *ngIf="isAuthenticatedUser">
+    <li>
+        <a mat-raised-button class="nav-icons">My Account</a>
+    </li>
+
+    <li>
+      <a mat-raised-button class="nav-icons" (click)="logout()">Logout</a>
+    </li>
+  </ul>
+
+  <ul *ngIf="!isAuthenticatedUser">
+    <li>
+      <a mat-raised-button class="nav-icons">Login</a>
+    </li>
+
+    <li>
+      <a mat-raised-button class="nav-icons">Signup</a>
+    </li>
+  </ul>
+
+</mat-toolbar>

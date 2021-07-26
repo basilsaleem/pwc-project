@@ -1,0 +1,48 @@
+<form  #formElement = "ngForm" ngForm>
+<mat-accordion multi="true" *ngIf="complaints.length > 0 ">
+  <mat-expansion-panel *ngFor="let complaint of complaints" >
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Subject
+      </mat-panel-title>
+      <mat-panel-description>
+        {{ complaint.subject }}
+      </mat-panel-description>
+
+    </mat-expansion-panel-header>
+      <div class="d-flex ">
+        <p class="item-title">Title</p>
+        <p class="item-content"> {{ complaint.message }}</p>
+      </div>
+
+
+    <div class="d-flex ">
+      <p class="item-title">Issue time</p>
+      <p class="item-content">Issue date </p>
+    </div>
+
+    <div class="d-flex ">
+      <p class="item-title ">status</p>
+      <p class="item-content">
+
+        <mat-form-field appearance="standard">
+          <mat-label>Select an option</mat-label>
+          <mat-select  [(value)]="complaint.complaintStatus.code"  #selectElement >
+            <mat-option *ngFor="let status of statues" [value]="status.code" >{{status.code}}</mat-option>
+
+          </mat-select>
+        </mat-form-field>
+
+      </p>
+    </div>
+
+    <mat-action-row *ngIf="isUpdatable" >
+      <button mat-button color="warn" (click)="updateStatus(complaint.id, selectElement)"> Update</button>
+    </mat-action-row>
+  </mat-expansion-panel>
+</mat-accordion>
+<!--<mat-paginator [length]="totalPosts" [pageSize]="postsPerPage" [pageSizeOptions]="pageSizeOptions" (page)="onChangedPage($event)"
+               *ngIf="posts.length > 0"></mat-paginator>-->
+<!--<p class="info-text mat-body-1" *ngIf="posts.length <= 0 && !isLoading">No posts added yet!</p>-->
+<p class="info-text mat-body-1" *ngIf="complaints.length <= 0">No posts added yet!</p>
+</form>

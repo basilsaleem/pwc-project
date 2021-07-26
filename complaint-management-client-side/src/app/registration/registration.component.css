@@ -1,0 +1,44 @@
+.form-container{
+  height: 100vh;
+
+}
+.form-container .desc-section{
+  padding-top:20px;
+
+}
+.form-container .overlay{
+  background: url('../../assets/hero-bg.png');
+  position: fixed;
+  z-index: -3000;
+  width: 100%;
+  height: 100%;
+  left:0;
+  top:0;
+}
+.registration-buttons{
+  display: flex;
+  flex-direction: row !important;
+  background: green;
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:60px;
+}
+
+.registration-buttons > div{
+  padding: 10px;
+  text-align: center;
+}
+.login-side{
+
+  background: burlywood;
+  color:black;
+}
+
+.signup-side{
+
+  background: aquamarine;
+  text-align: center;
+  color:black;
+}
+

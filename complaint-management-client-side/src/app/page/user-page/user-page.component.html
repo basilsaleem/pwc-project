@@ -1,0 +1,19 @@
+<app-navbar></app-navbar>
+
+<div class="d-flex">
+  <div class="side-menu d-flex flex-column">
+
+    <a routerLink="file-complaint" >
+      <button mat-raised-button>File a Complaint </button>
+    </a>
+
+    <a routerLink="view-complaint">
+      <button mat-raised-button > View your Complaints
+      </button>
+    </a>
+  </div>
+
+  <div class="main-menu">
+    <router-outlet></router-outlet>
+  </div>
+</div>

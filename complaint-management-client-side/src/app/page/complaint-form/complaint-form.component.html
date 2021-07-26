@@ -1,0 +1,29 @@
+<form class="m-auto w-50 d-flex flex-column" (submit)="onFormSubmit(formElement)"  ngForm #formElement = "ngForm">
+
+    <mat-form-field appearance="outline">
+      <mat-label for="subject">Subject</mat-label>
+      <input matInput type="text"
+             name="subject"
+             id="subject"
+             placeholder="Email"
+             #subjectModel = "ngModel"
+             ngModel>
+      <mat-error *ngIf="subjectModel.invalid">Required field</mat-error>
+    </mat-form-field>
+
+    <mat-form-field  appearance="outline" >
+      <mat-label>Your Message</mat-label>
+      <textarea matInput id="message"
+                placeholder="Let us hear your thoughts"
+                rows="10"
+                ngModel
+                #messageModel = "ngModel"
+                name="message" mat-
+      >
+
+      </textarea>
+      <mat-error *ngIf="messageModel.invalid">Required field</mat-error>
+    </mat-form-field>
+
+  <button mat-raised-button type="submit" class="btn ">Submit</button>
+</form>

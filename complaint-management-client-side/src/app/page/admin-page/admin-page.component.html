@@ -1,0 +1,17 @@
+<app-navbar></app-navbar>
+<div class="d-flex">
+    <div class="side-menu d-flex flex-column">
+
+      <a routerLink="manage-complaint">
+        <button mat-raised-button> Manage Complaints </button>
+      </a>
+
+      <a routerLink="manage-users">
+        <button mat-raised-button> Manage Users </button>
+      </a>
+    </div>
+
+  <div class="main-menu">
+    <router-outlet></router-outlet>
+  </div>
+</div>

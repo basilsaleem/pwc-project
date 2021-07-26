@@ -1,0 +1,12 @@
+.btn{
+  background-color: #ad1a02;
+  color:white;
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #363636;
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-label {
+  color: #363636;
+}

@@ -1,0 +1,28 @@
+mat-toolbar{
+  background: #fff;
+  color:white;
+}
+.pwc-bk-color{
+  background-color: #363636;
+}
+.pwc-icon {
+  width: 20%;
+  height: 37px;
+  margin-left: 40px;
+}
+.example-spacer {
+  flex: 1 1 auto;
+}
+.nav-icons{
+  margin:5px;
+}
+
+ul{
+  display: flex;
+  margin:auto 0;
+}
+ul > li{
+  list-style: none;
+}
+
+

@@ -39,6 +39,7 @@ import { ManageUsersComponent } from './page/manage-users/manage-users.component
 import { AddUserComponent } from './page/add-user/add-user.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {A11yModule} from '@angular/cdk/a11y';
+import {ErrorInterceptor} from './auth/error.interceptor';
 
 @NgModule({
   declarations: [
@@ -87,7 +88,8 @@ import {A11yModule} from '@angular/cdk/a11y';
     MatDialogModule
 
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -12,7 +12,7 @@ public interface UserController<T> {
      */
     List<T> findAllUsers();
 
-    T registerByUsernameAndPassword(LoginForm user);
+    ResponseEntity<?> registerByUsernameAndPassword(LoginForm user);
 
     ResponseEntity<T> findUserById(Long id);
 }

@@ -1,14 +1,16 @@
 <div class="form-container">
-  <div class="desc-section">
-    <h1 class="text-center">Complaint Portal System</h1>
-    <h1 class="text-center">Complaint Portal System</h1>
-    <h1 class="text-center">Complaint Portal System</h1>
-    <h1 class="text-center">Complaint Portal System</h1>
-  </div>
+
   <div class="overlay"></div>
+  <section  class="d-flex flex-column justify-content-end align-items-center">
+    <div class="desc-section">
+      <h1 class="text-center text-white-50">Complaint Portal System</h1>
+    </div>
+    <div  class="container " data-bs-ride="carousel">
+      <router-outlet class="m-5"></router-outlet>
+    </div>
+  </section>
 
 
-  <router-outlet class="m-5"></router-outlet>
   <div class="registration-buttons flex-column">
     <div class="login-side w-50">
       <a mat-button routerLink = '/registration/login' routerLinkActive="active">Log in</a>

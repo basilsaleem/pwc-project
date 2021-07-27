@@ -1,13 +1,16 @@
 .form-container{
   height: 100vh;
-
+  background: linear-gradient(
+    0deg
+    , #2a2c39 0%, #33364a 100%)
 }
 .form-container .desc-section{
   padding-top:20px;
+  margin-top:10%;
 
 }
 .form-container .overlay{
-  background: url('../../assets/hero-bg.png');
+  background: url('src/assets/bk.png');
   position: fixed;
   z-index: -3000;
   width: 100%;
@@ -31,14 +34,30 @@
 }
 .login-side{
 
-  background: burlywood;
+  background: #3f51b5;
+  color:white;
+}
+.login-side > a:hover{
+
+  background: white;
   color:black;
+  text-decoration: none;
 }
 
 .signup-side{
 
-  background: aquamarine;
+  background: #f7f7f7;
   text-align: center;
+  color:black;
+}
+.signup-side > a{
+
+  background: black;
+  color:white;
+  text-decoration: none;
+}
+.signup-side > a:hover{
+  background: white;
   color:black;
 }
 

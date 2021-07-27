@@ -6,6 +6,7 @@ import {ComplaintStatus} from '../model/complaint.status';
 import {NgForm} from '@angular/forms';
 import {MatSelect} from '@angular/material/select';
 import {AlertService} from '../../alert/alert.service';
+import {AuthService} from '../../auth/service/auth.service';
 
 @Component({
   selector: 'app-complaint-tickets-list',
@@ -15,7 +16,7 @@ import {AlertService} from '../../alert/alert.service';
 export class ComplaintTicketsListComponent implements OnInit, OnDestroy {
 
   @Input() isUpdatable: false;
-  constructor(private complaintService: ComplaintService, private alertService: AlertService) {}
+  constructor(private complaintService: ComplaintService, private alertService: AlertService, private authService: AuthService) {}
 
   // tslint:disable-next-line:no-input-rename
   @Input('complaints') complaints: Complaint[];
@@ -43,5 +44,9 @@ export class ComplaintTicketsListComponent implements OnInit, OnDestroy {
 
   updateStatus(id: number, selectElement: MatSelect): void {
     this.complaintService.updateComplaintStatus(id, selectElement.value);
+  }
+
+  isAdmin(): boolean {
+    return this.authService.IsAdmin();
   }
 }

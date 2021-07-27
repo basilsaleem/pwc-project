@@ -13,9 +13,10 @@ import {ChildAuthGuardService} from '../auth/guard/child-auth-guard.service';
 import {AdminGuard} from '../auth/guard/admin-guard.service';
 import {ViewComplaintComponent} from './view-complaint/view-complaint.component';
 import {ManageUsersComponent} from './manage-users/manage-users.component';
+import {SimpleGuard} from '../auth/guard/simple.guard';
 
 
-const routes: Routes = [{
+const routes: Routes = [{path: '', component: RegistrationComponent, canActivate: [SimpleGuard]}, {
         path: 'user',
         component: UserPageComponent, canActivateChild: [ChildAuthGuardService], canActivate: [AuthGuard], children: [
         {

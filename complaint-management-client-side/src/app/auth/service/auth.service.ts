@@ -8,7 +8,10 @@ import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {Router} from '@angular/router';
 import {AuthConstants} from '../auth-constants';
 import {SecureStorageService} from './secure-storage.service';
-
+const TOKEN_KEY = 'accessToke';
+const TOKEN_EXPIRATION_KEY = 'accessTokeExpiresIn';
+const USER_ID = 'userId';
+const IS_ADMIN_KEY = 'isAdmin';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +34,7 @@ export class AuthService{
               private secureStorage: SecureStorageService) { }
 
   IsAdmin(): boolean {
-    if (this.secureStorage.getItem(AuthConstants.IS_ADMIN_KEY)){
+    if (this.secureStorage.getItem(IS_ADMIN_KEY) === true){
       return true;
     }
     return false;
@@ -63,8 +66,9 @@ export class AuthService{
     // tslint:disable-next-line:max-line-length
     const signupEndpoint = registrationConfig.APP_ENDPOINT + registrationConfig.registration.API.VERSION + registrationConfig.registration.API.SIGN_UP;
     this.httpClient.post(signupEndpoint, authData)
-      .subscribe(responseData => {
-       this.userCreationListener.next(true);
+      .subscribe((responseData: JwtAuthData)  => {
+        this.userCreationListener.next(true);
+        this.doInternalLogin(responseData);
       }, error => {
         if (error.status === 409){
           this.userCreationListener.next(false);
@@ -73,6 +77,15 @@ export class AuthService{
         this.userCreationListener.next(false);
       });
   }
+
+ /* private navigate(jwtAuthData: JwtAuthData): void{
+    const adminRole = jwtAuthData.roles.find( value => value === 'admin');
+    if(adminRole){
+      this.router.navigate(['/admin']);
+    }else{
+      this.router.navigate(['/user']);
+    }
+  }*/
 
   login(authData: UserDataRequest): void {
     // tslint:disable-next-line:max-line-length
@@ -98,7 +111,7 @@ export class AuthService{
     this.storeResponse(responseData);
 
     const adminRole = responseData.roles.find( value => value === 'admin');
-    this.registerExpirationLogin(responseData.expiresIn);
+    // this.registerExpirationLogin( responseData.expiresIn);
 
     if (adminRole){
       this.isAdmin = true;
@@ -111,7 +124,9 @@ export class AuthService{
 
   private storeResponse(responseData: JwtAuthData): void {
     this.storeToLocalStorage(responseData);
-    this.alert.successNotification('Logged In Successfully');
+    this.userId = responseData.user.id;
+    this.accessToke = responseData.accessToken;
+
     this.isAuthenticated = true;
     this.authStatusListener.next(true);
   }
@@ -119,10 +134,15 @@ export class AuthService{
   private storeToLocalStorage(responseData: JwtAuthData): void{
     const now = new Date();
     const expirationDate = new Date(now.getTime() + responseData.expiresIn);
-    this.secureStorage.setItem(AuthConstants.TOKEN_KEY, responseData.accessToken);
-    this.secureStorage.setItem(AuthConstants.TOKEN_EXPIRATION_KEY, expirationDate.toISOString());
-    this.secureStorage.setItem(AuthConstants.USER_ID, responseData.user.id);
-    this.secureStorage.setItem(AuthConstants.IS_ADMIN_KEY, String(this.isAdmin));
+    const adminRole = responseData.roles.find( value => value === 'admin');
+
+    this.secureStorage.setItem(TOKEN_KEY, responseData.accessToken);
+    this.secureStorage.setItem(TOKEN_EXPIRATION_KEY, expirationDate.toISOString());
+    this.secureStorage.setItem(USER_ID, responseData.user.id);
+
+    if (adminRole){
+      this.secureStorage.setItem(IS_ADMIN_KEY, true);
+    }
   }
 
   private cleanLocalStorage(): void {
@@ -131,25 +151,28 @@ export class AuthService{
 
   private tokensCleanup(): void {
     this.cleanLocalStorage();
-    this.alert.successNotification('Logout Successfully');
     this.isAuthenticated = false;
     this.authStatusListener.next(false);
   }
 
   private registerExpirationLogin(expiresIn: number): void {
+    const expirationDate = new Date(new Date().getTime() + expiresIn);
+    const expiresAfter = new Date();
+    const diffTime = Math.abs(expiresAfter.getTime() - expirationDate.getTime());
+
     this.tokenTimer = setTimeout(() => {
       this.logout();
-    }, expiresIn);
+    }, diffTime);
   }
 
   getAuthData(): {accessToken, expiresIn: Date, isAdmin, userId}{
-    const accessToken = this.secureStorage.getItem(AuthConstants.TOKEN_KEY);
-    const expirationDate = this.secureStorage.getItem(AuthConstants.TOKEN_EXPIRATION_KEY);
-    const isAdmin = this.secureStorage.getItem(AuthConstants.IS_ADMIN_KEY);
-    const userId = this.secureStorage.getItem(AuthConstants.USER_ID);
+    const accessToken = this.secureStorage.getItem(TOKEN_KEY);
+    const expirationDate = this.secureStorage.getItem(TOKEN_EXPIRATION_KEY);
+    const isAdmin = this.secureStorage.getItem(IS_ADMIN_KEY);
+    const userId = this.secureStorage.getItem(USER_ID);
 
-    if (!accessToken && expirationDate) {
-      return ;
+    if (!accessToken || !expirationDate) {
+      return;
     }
     return {accessToken, expiresIn: new Date(expirationDate), isAdmin, userId
     };
@@ -157,6 +180,9 @@ export class AuthService{
 
   doAutoLogin(): void {
     const authInformation = this.getAuthData();
+    if(!authInformation){
+      return;
+    }
     const nowDate = new Date();
     const isTokenInFuture = authInformation.expiresIn > nowDate;
     if (isTokenInFuture){

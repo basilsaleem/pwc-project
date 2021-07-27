@@ -5,21 +5,21 @@ import com.assignment.pwc.complaintmanagement.controller.util.ComplaintUtil;
 import com.assignment.pwc.complaintmanagement.entity.complaint.Complaint;
 import com.assignment.pwc.complaintmanagement.entity.complaint.ComplaintStatus;
 import com.assignment.pwc.complaintmanagement.entity.complaint.ComplaintStatusType;
+import com.assignment.pwc.complaintmanagement.entity.user.User;
 import com.assignment.pwc.complaintmanagement.model.ApiResponse;
 import com.assignment.pwc.complaintmanagement.model.complaint.ComplaintRequestDetails;
 import com.assignment.pwc.complaintmanagement.repo.ComplaintJpaRepo;
 import com.assignment.pwc.complaintmanagement.repo.ComplaintRepository;
 import com.assignment.pwc.complaintmanagement.repo.ComplaintStatusRepository;
+import com.assignment.pwc.complaintmanagement.repo.UserRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.persistence.EntityNotFoundException;
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -30,16 +30,18 @@ public class ComplaintControllerImpl<C extends Complaint> implements ComplaintCo
     private final ComplaintRepository complaintRepository;
     private final ComplaintStatusRepository complaintStatusRepository;
     private final ComplaintJpaRepo complaintJpaRepo;
+    private final UserRepository userRepository;
 
     public ComplaintControllerImpl(ComplaintRepository complaintRepository,
                                    ComplaintUtil complaintUtil,
                                    ComplaintStatusRepository complaintStatusRepository,
-                                   ComplaintJpaRepo complaintJpaRepo){
+                                   ComplaintJpaRepo complaintJpaRepo, UserRepository userRepository){
 
         this.complaintRepository = complaintRepository;
         this.complaintUtil = complaintUtil;
         this.complaintStatusRepository = complaintStatusRepository;
         this.complaintJpaRepo = complaintJpaRepo;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -97,7 +99,7 @@ public class ComplaintControllerImpl<C extends Complaint> implements ComplaintCo
 
     @Override
     @GetMapping("/sorted/complaints")
-    public Map<String, List<C>> findAllComplaints(Sort sort) {
+    public Map<String, List<C>> findAllComplaintsSortedByCode() {
         Map<String, List<C>> complaintByStatus = new HashMap<>();
         complaintByStatus.put(ComplaintStatusType.PENDING.getName(), new ArrayList<>());
         complaintByStatus.put(ComplaintStatusType.RESOLVED.getName(), new ArrayList<>());
@@ -111,6 +113,35 @@ public class ComplaintControllerImpl<C extends Complaint> implements ComplaintCo
         return complaintByStatus;
 
     }
+    @SuppressWarnings("unchecked")
+    @Override
+    @GetMapping("/complaints-by-status")
+    public List<C> findAllByComplaintStatus(@RequestParam String statusCode) {
+
+        ComplaintStatus complaintStatus =
+                this.complaintStatusRepository.
+                        findComplaintStatusByCode(statusCode).
+                        orElseThrow(() -> new EntityNotFoundException("Not found status"+ statusCode));
+
+        return (List<C>) this.complaintRepository.findAllByComplaintStatus(complaintStatus);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    @GetMapping("/search/complaints")
+    public List<C> findAllByEmailText(@RequestParam String email) {
+
+        if(email == null || email.isEmpty())
+            return (List<C>) this.complaintRepository.findAll();
+
+        Optional<User> user = this.userRepository.findByEmail(email);
+
+        if(user.isPresent()){
+            return (List<C>) this.complaintRepository.findAllByUserId(user.get().getId());
+        }
+        return Collections.emptyList();
+    }
+
     private void insertIntoMapList(Map<String, List<C>> map, String key, C item){
         List<C> list = map.get(key);
         list.add(item);

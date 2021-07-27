@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Role} from '../model/role';
 import {pageConfig} from '../page.config';
 import {AlertService} from '../../alert/alert.service';

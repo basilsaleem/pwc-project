@@ -17,12 +17,7 @@ export class ManageUsersComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(AddUserComponent);
 
-    dialogRef.beforeClosed().subscribe(results =>{
-      console.log("Hiiii" + results);
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
+
   }
 
 }

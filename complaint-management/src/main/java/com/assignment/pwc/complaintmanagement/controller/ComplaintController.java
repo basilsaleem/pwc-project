@@ -22,6 +22,10 @@ public interface ComplaintController<C> {
 
     ResponseEntity<?> updateComplaintStatus(ComplaintRequestDetails requestDetails);
 
-    Map<String, List<C>> findAllComplaints(Sort sort);
+    Map<String, List<C>> findAllComplaintsSortedByCode();
 
+
+    List<C> findAllByComplaintStatus(String statusCode);
+
+    List<C> findAllByEmailText(String text);
 }

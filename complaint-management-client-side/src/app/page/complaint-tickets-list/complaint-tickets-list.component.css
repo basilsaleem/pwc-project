@@ -33,8 +33,17 @@ mat-paginator {
 }
 .item-title{
   width:34%;
-  margin-right: 16px
+  margin-right: 16px;
+
 }
 .item-content{
   width: 60%;
+}
+
+.item{
+  margin-top:15px;
+}
+
+.force-hidden{
+  display: none !important;
 }

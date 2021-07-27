@@ -1,8 +1,8 @@
 <form  #formElement = "ngForm" ngForm>
 <mat-accordion multi="true" *ngIf="complaints.length > 0 ">
   <mat-expansion-panel *ngFor="let complaint of complaints" >
-    <mat-expansion-panel-header>
-      <mat-panel-title>
+    <mat-expansion-panel-header [ngStyle] ="{backgroundColor: this.generateStyle.getStyle(complaint.complaintStatus.code)}">
+      <mat-panel-title class="text-white">
         Subject
       </mat-panel-title>
       <mat-panel-description>
@@ -10,24 +10,24 @@
       </mat-panel-description>
 
     </mat-expansion-panel-header>
-      <div class="d-flex ">
-        <p class="item-title">Title</p>
+      <div class="d-flex item">
+        <p class="item-title">Body</p>
         <p class="item-content"> {{ complaint.message }}</p>
       </div>
 
 
-    <div class="d-flex ">
-      <p class="item-title">Issue time</p>
-      <p class="item-content">Issue date </p>
+    <div class="d-flex" [class.force-hidden]="!showSubmitterEmail">
+      <p class="item-title">Submitter Email</p>
+      <p class="item-content">{{complaint.user.email}} </p>
     </div>
 
     <div class="d-flex ">
-      <p class="item-title ">status</p>
+      <p class="item-title ">Status</p>
       <p class="item-content">
 
         <mat-form-field appearance="standard">
           <mat-label>Select an option</mat-label>
-          <mat-select  [(value)]="complaint.complaintStatus.code"  #selectElement >
+          <mat-select  [(value)]="complaint.complaintStatus.code"  #selectElement [disabled]="!isAdmin()">
             <mat-option *ngFor="let status of statues" [value]="status.code" >{{status.code}}</mat-option>
 
           </mat-select>
@@ -42,5 +42,5 @@
   </mat-expansion-panel>
 </mat-accordion>
 
-<p class="info-text mat-body-1" *ngIf="complaints.length <= 0">No Complaints yet!</p>
+<p class="info-text mat-body-1" *ngIf="complaints.length <= 0">No Complaints for selection value</p>
 </form>

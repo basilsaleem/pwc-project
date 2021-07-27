@@ -17,27 +17,38 @@ import {SimpleGuard} from '../auth/guard/simple.guard';
 
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'registration'},
-    {path: 'user',
-          component: UserPageComponent, canActivateChild: [ChildAuthGuardService], canActivate: [AuthGuard], children: [
-          {
-            path: 'file-complaint',
-            component: ComplaintFormComponent
-          }, {
-            path: 'view-complaint',
-            component: ViewComplaintComponent
-          }]},
+  { path: '', pathMatch: 'full', redirectTo: 'registration' },
+  {
+    path: 'user',
+    component: UserPageComponent, children: [
       {
-        path: 'admin', component: AdminPageComponent, canActivate: [AdminGuard], children: [{
-            path: 'manage-complaint',
-            component: ManageComplaintComponent
-          },
-          {
-            path: 'manage-users', component: ManageUsersComponent, canActivate: [AdminGuard]
-          }
-        ]
+        path: 'file-complaint',
+        component: ComplaintFormComponent
+      }, {
+        path: 'view-complaint',
+        component: ViewComplaintComponent
+      },
+      {
+        path: '**',
+        component: ViewComplaintComponent
+      }]
+  },
+  {
+    path: 'admin', component: AdminPageComponent, canActivate: [AdminGuard], children: [{
+      path: 'manage-complaint',
+      component: ManageComplaintComponent
+    },
+      {
+        path: 'manage-users', component: ManageUsersComponent, canActivate: [AdminGuard]
+      },
+      {
+        path: '**', component: ManageUsersComponent, canActivate: [AdminGuard]
       }
+    ]
+  },
+  { path: '**', pathMatch: 'full', redirectTo: 'registration' },
 ];
+
 
 @NgModule({
   declarations: [],

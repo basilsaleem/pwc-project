@@ -1,12 +1,12 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ComplaintService} from '../service/complaint.service';
 import {Complaint} from '../model/complaint';
 import {ComplaintStatus} from '../model/complaint.status';
-import {NgForm} from '@angular/forms';
 import {MatSelect} from '@angular/material/select';
 import {AlertService} from '../../alert/alert.service';
 import {AuthService} from '../../auth/service/auth.service';
+import {StyleGenerator} from '../style-generator';
 
 @Component({
   selector: 'app-complaint-tickets-list',
@@ -14,10 +14,11 @@ import {AuthService} from '../../auth/service/auth.service';
   styleUrls: ['./complaint-tickets-list.component.css']
 })
 export class ComplaintTicketsListComponent implements OnInit, OnDestroy {
-
-  @Input() isUpdatable: false;
   constructor(private complaintService: ComplaintService, private alertService: AlertService, private authService: AuthService) {}
 
+  @Input() isUpdatable: false;
+
+  @Input() showSubmitterEmail = false;
   // tslint:disable-next-line:no-input-rename
   @Input('complaints') complaints: Complaint[];
 
@@ -25,6 +26,17 @@ export class ComplaintTicketsListComponent implements OnInit, OnDestroy {
   public selectedComplaint: Complaint;
 
   statues: ComplaintStatus[];
+  generateStyle: StyleGenerator = {
+    getStyle(code: string): string {
+      if (code === 'pending'){
+        return '#F7CB73';
+      }else if (code === 'resolved'){
+        return '#50AE34';
+      }else if (code === 'dismissed'){
+        return '#df4759';
+      }
+    }
+  };
 
 
   ngOnInit(): void {

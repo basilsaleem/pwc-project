@@ -1,5 +1,30 @@
-<div>
-  <app-complaint-tickets-list [isUpdatable]="isAdmin()" [complaints]="complaints">
 
+<div class="filters text-left">
+  <p>Filters Layout</p>
+  <div>
+    <mat-form-field appearance="standard">
+      <mat-label>Select an option</mat-label>
+      <mat-select   (selectionChange)="handleOnStatusSelectionEvent($event)" >
+        <mat-option *ngFor="let status of statues" [value]="status.code" >{{status.code}}
+        </mat-option>
+
+      </mat-select>
+
+    </mat-form-field>
+  </div>
+
+  <div class="email-filter">
+    <mat-form-field class="form-group">
+      <input matInput type="text"  name="emailFilter" #emailField placeholder="E-mail">
+    </mat-form-field>
+    <div class="form-group">
+      <button mat-raised-button (click)="emailChangeListener(emailField)"> Search by email</button>
+    </div>
+  </div>
+</div>
+
+
+<div>
+  <app-complaint-tickets-list  [isUpdatable]="isAdmin()" [complaints]="complaints" [showSubmitterEmail]="true">
   </app-complaint-tickets-list>
 </div>

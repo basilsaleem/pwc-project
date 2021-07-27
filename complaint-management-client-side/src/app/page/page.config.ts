@@ -9,7 +9,9 @@ const pageConfig = {
       REMOVE_COMPLAINT_BY_ID: '/complaints/remove/{id}',
       FIND_ALL: '/complaints',
       FIND_ALL_COMPLAINT_STATUES : '/complaint/statues',
-      UPDATE_COMPLAINT_STATUS: '/complaint/status-update'
+      UPDATE_COMPLAINT_STATUS: '/complaint/status-update',
+      FIND_ALL_COMPLAINT_BY_STATUS_CODE: '/complaints-by-status?statusCode=',
+      FIND_ALL_BY_EMAIL: '/search/complaints?email='
     }},
     role: {
       API: {

@@ -4,11 +4,11 @@ import javax.validation.constraints.NotNull;
 
 public class ComplaintRequestDetails {
 
-    @NotNull
+
     private Long userId;
-    @NotNull
+
     private String message;
-    @NotNull
+
     private String subject;
 
     private long complaintId;

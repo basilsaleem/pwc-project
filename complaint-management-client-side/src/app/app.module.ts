@@ -40,6 +40,7 @@ import { AddUserComponent } from './page/add-user/add-user.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {A11yModule} from '@angular/cdk/a11y';
 import {ErrorInterceptor} from './auth/error.interceptor';
+import { ComplaintStatusComponent } from './page/complaint-status/complaint-status.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import {ErrorInterceptor} from './auth/error.interceptor';
     ViewComplaintComponent,
     ManageUsersComponent,
     AddUserComponent,
+    ComplaintStatusComponent,
   ],
   imports: [
     BrowserModule,

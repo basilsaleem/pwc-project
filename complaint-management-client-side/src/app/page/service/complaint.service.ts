@@ -59,6 +59,32 @@ export class ComplaintService {
     return [];
   }
 
+  getAllByCode(code: string): Complaint[] {
+
+    const getAllUri = pageConfig.APP_ENDPOINT + pageConfig.complaint.API.VERSION + pageConfig.complaint.API.FIND_ALL_COMPLAINT_BY_STATUS_CODE + code;
+
+    this.httpClient.get<Complaint[]>(getAllUri).subscribe(responseData => {
+      this.complaintSubscription.next(responseData);
+      return responseData;
+    }, error => {
+      console.log(error);
+    });
+    return [];
+  }
+
+  getAllByEmail(email: string): Complaint[] {
+
+    const getAllUri = pageConfig.APP_ENDPOINT + pageConfig.complaint.API.VERSION + pageConfig.complaint.API.FIND_ALL_BY_EMAIL + email;
+
+    this.httpClient.get<Complaint[]>(getAllUri).subscribe(responseData => {
+      this.complaintSubscription.next(responseData);
+      return responseData;
+    }, error => {
+      console.log(error);
+    });
+    return [];
+  }
+
   getAllComplaintStatus(): ComplaintStatus[] {
     const getAllUri = pageConfig.APP_ENDPOINT + pageConfig.complaint.API.VERSION + pageConfig.complaint.API.FIND_ALL_COMPLAINT_STATUES;
     this.httpClient.get<ComplaintStatus[]>(getAllUri).subscribe(responseData => {
@@ -71,7 +97,7 @@ export class ComplaintService {
 
   updateComplaintStatus(complaintId: number, statusCode: string): void {
     const getAllUri = pageConfig.APP_ENDPOINT + pageConfig.complaint.API.VERSION + pageConfig.complaint.API.UPDATE_COMPLAINT_STATUS;
-    this.httpClient.put(getAllUri, {complaintId, statusCode},{
+    this.httpClient.put(getAllUri, {complaintId, statusCode}, {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
       responseType: 'text'
     }).subscribe(responseData => {

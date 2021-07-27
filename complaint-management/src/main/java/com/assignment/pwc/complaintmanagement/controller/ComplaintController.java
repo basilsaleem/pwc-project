@@ -2,9 +2,11 @@ package com.assignment.pwc.complaintmanagement.controller;
 
 import com.assignment.pwc.complaintmanagement.entity.complaint.ComplaintStatus;
 import com.assignment.pwc.complaintmanagement.model.complaint.ComplaintRequestDetails;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ComplaintController<C> {
 
@@ -19,5 +21,7 @@ public interface ComplaintController<C> {
     List<ComplaintStatus> findAllComplaintStatues();
 
     ResponseEntity<?> updateComplaintStatus(ComplaintRequestDetails requestDetails);
+
+    Map<String, List<C>> findAllComplaints(Sort sort);
 
 }

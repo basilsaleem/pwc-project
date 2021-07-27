@@ -16,16 +16,17 @@ import {ManageUsersComponent} from './manage-users/manage-users.component';
 import {SimpleGuard} from '../auth/guard/simple.guard';
 
 
-const routes: Routes = [{path: '', component: RegistrationComponent, canActivate: [SimpleGuard]}, {
-        path: 'user',
-        component: UserPageComponent, canActivateChild: [ChildAuthGuardService], canActivate: [AuthGuard], children: [
-        {
-          path: 'file-complaint',
-          component: ComplaintFormComponent
-        }, {
-          path: 'view-complaint',
-          component: ViewComplaintComponent
-        }]},
+const routes: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'registration'},
+    {path: 'user',
+          component: UserPageComponent, canActivateChild: [ChildAuthGuardService], canActivate: [AuthGuard], children: [
+          {
+            path: 'file-complaint',
+            component: ComplaintFormComponent
+          }, {
+            path: 'view-complaint',
+            component: ViewComplaintComponent
+          }]},
       {
         path: 'admin', component: AdminPageComponent, canActivate: [AdminGuard], children: [{
             path: 'manage-complaint',

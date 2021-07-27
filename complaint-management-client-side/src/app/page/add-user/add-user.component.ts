@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, NgForm, Validators} from '@angular/forms';
 import {Role} from '../model/role';
 import {RoleService} from '../service/role.service';
@@ -6,6 +6,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 import {AuthService} from '../../auth/service/auth.service';
 import {UserDataRequest} from '../../auth/userDataRequest';
 import {AlertService} from '../../alert/alert.service';
+import {Subscription} from 'rxjs';
 
 
 @Component({
@@ -13,12 +14,14 @@ import {AlertService} from '../../alert/alert.service';
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.css']
 })
-export class AddUserComponent implements OnInit {
+export class AddUserComponent implements OnInit, OnDestroy {
   roles: Role[] = [];
   form: FormGroup;
   email = '';
   password = '';
   role = '';
+
+  creationSubscriptionListener: Subscription;
 
   constructor(private roleService: RoleService,
               private dialog: MatDialogRef<AddUserComponent>,
@@ -64,12 +67,16 @@ export class AddUserComponent implements OnInit {
 
     this.authService.createUser(userData);
 
-    this.authService.getUserCreationListener().subscribe(isCreated => {
+    this.creationSubscriptionListener = this.authService.getUserCreationListener().subscribe(isCreated => {
       if (isCreated){
         this.dialog.close(true);
+        this.alertService.errorNotification('Created successfully');
       }else{
         this.alertService.errorNotification('E-mail address is reserved please try another email');
       }
     });
+  }
+  ngOnDestroy() {
+    this.creationSubscriptionListener.unsubscribe();
   }
 }

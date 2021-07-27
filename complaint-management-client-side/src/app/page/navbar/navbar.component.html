@@ -9,7 +9,7 @@
 
   <ul *ngIf="isAuthenticatedUser">
     <li>
-        <a mat-raised-button class="nav-icons">My Account</a>
+        <a mat-raised-button class="nav-icons">{{userEmail}}</a>
     </li>
 
     <li>
@@ -19,11 +19,11 @@
 
   <ul *ngIf="!isAuthenticatedUser">
     <li>
-      <a mat-raised-button class="nav-icons">Login</a>
+      <a mat-raised-button class="nav-icons" (click)="toLoginPage()">Login</a>
     </li>
 
     <li>
-      <a mat-raised-button class="nav-icons">Signup</a>
+      <a mat-raised-button class="nav-icons" (click)="toSignupPage()">Signup</a>
     </li>
   </ul>
 

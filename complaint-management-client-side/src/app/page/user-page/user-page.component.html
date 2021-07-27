@@ -1,16 +1,23 @@
 <app-navbar></app-navbar>
 
 <div class="d-flex">
-  <div class="side-menu d-flex flex-column">
 
-    <a routerLink="file-complaint" >
-      <button mat-raised-button>File a Complaint </button>
-    </a>
-
-    <a routerLink="view-complaint">
-      <button mat-raised-button > View your Complaints
-      </button>
-    </a>
+  <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark side-menu" style="width: 280px;">
+    <span class="w-auto side-menu-desc">Manage your application</span>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+        <a  class="nav-link text-white " aria-current="page" routerLink="file-complaint" routerLinkActive="active">
+          File a Complaint
+        </a>
+      </li>
+      <li>
+        <a  class="nav-link text-white" routerLink="view-complaint" routerLinkActive="active">
+          View your Complaints
+        </a>
+      </li>
+    </ul>
+    <hr>
   </div>
 
   <div class="main-menu">

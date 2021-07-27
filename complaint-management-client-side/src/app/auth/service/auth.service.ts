@@ -6,12 +6,13 @@ import {JwtAuthData} from '../jwt-auth-data';
 import {AlertService} from '../../alert/alert.service';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {Router} from '@angular/router';
-import {AuthConstants} from '../auth-constants';
 import {SecureStorageService} from './secure-storage.service';
+import {User} from '../../page/model/user';
 const TOKEN_KEY = 'accessToke';
 const TOKEN_EXPIRATION_KEY = 'accessTokeExpiresIn';
 const USER_ID = 'userId';
 const IS_ADMIN_KEY = 'isAdmin';
+const USER = 'user';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +23,10 @@ export class AuthService{
   private authStatusListener = new Subject<boolean>();
   private adminListener = new Subject<boolean>();
   private userCreationListener = new Subject<boolean>();
+  private userLoggedInListener = new Subject<User>();
   private isAuthenticated = false;
   private userId: number;
+  private user: User;
   private isAdmin = false;
   // @ts-ignore
   private tokenTimer: NodeJS.Timer;
@@ -40,8 +43,16 @@ export class AuthService{
     return false;
   }
 
-  getUserCreationListener(): Subject<boolean> {
-    return this.userCreationListener;
+  getUser(): User {
+    if(this.user)
+      return this.user;
+    return this.secureStorage.getItem(USER);
+}
+  getUserLoggedInListener(): Observable<User> {
+    return this.userLoggedInListener;
+  }
+  getUserCreationListener(): Observable<boolean> {
+    return this.userCreationListener.asObservable();
   }
   IsAuthenticated(): boolean {
     return this.isAuthenticated;
@@ -52,7 +63,7 @@ export class AuthService{
   }
 
   getAdminListener(): Observable<boolean> {
-    return this.adminListener;
+    return this.adminListener.asObservable();
   }
   getAuthStatus(): Observable<boolean> {
     return this.authStatusListener.asObservable();
@@ -125,6 +136,7 @@ export class AuthService{
   private storeResponse(responseData: JwtAuthData): void {
     this.storeToLocalStorage(responseData);
     this.userId = responseData.user.id;
+    this.user = responseData.user;
     this.accessToke = responseData.accessToken;
 
     this.isAuthenticated = true;
@@ -139,9 +151,12 @@ export class AuthService{
     this.secureStorage.setItem(TOKEN_KEY, responseData.accessToken);
     this.secureStorage.setItem(TOKEN_EXPIRATION_KEY, expirationDate.toISOString());
     this.secureStorage.setItem(USER_ID, responseData.user.id);
+    this.secureStorage.setItem(USER, responseData.user);
 
     if (adminRole){
       this.secureStorage.setItem(IS_ADMIN_KEY, true);
+    }else{
+      this.secureStorage.setItem(IS_ADMIN_KEY, false);
     }
   }
 
@@ -165,22 +180,22 @@ export class AuthService{
     }, diffTime);
   }
 
-  getAuthData(): {accessToken, expiresIn: Date, isAdmin, userId}{
+  getAuthData(): {accessToken, expiresIn: Date, isAdmin, userId, user}{
     const accessToken = this.secureStorage.getItem(TOKEN_KEY);
     const expirationDate = this.secureStorage.getItem(TOKEN_EXPIRATION_KEY);
     const isAdmin = this.secureStorage.getItem(IS_ADMIN_KEY);
     const userId = this.secureStorage.getItem(USER_ID);
-
+    const user = this.secureStorage.getItem(USER);
     if (!accessToken || !expirationDate) {
       return;
     }
-    return {accessToken, expiresIn: new Date(expirationDate), isAdmin, userId
+    return {accessToken, expiresIn: new Date(expirationDate), isAdmin, userId, user
     };
   }
 
   doAutoLogin(): void {
     const authInformation = this.getAuthData();
-    if(!authInformation){
+    if (!authInformation){
       return;
     }
     const nowDate = new Date();

@@ -4,16 +4,22 @@ import com.assignment.pwc.complaintmanagement.controller.ComplaintController;
 import com.assignment.pwc.complaintmanagement.controller.util.ComplaintUtil;
 import com.assignment.pwc.complaintmanagement.entity.complaint.Complaint;
 import com.assignment.pwc.complaintmanagement.entity.complaint.ComplaintStatus;
+import com.assignment.pwc.complaintmanagement.entity.complaint.ComplaintStatusType;
 import com.assignment.pwc.complaintmanagement.model.ApiResponse;
 import com.assignment.pwc.complaintmanagement.model.complaint.ComplaintRequestDetails;
+import com.assignment.pwc.complaintmanagement.repo.ComplaintJpaRepo;
 import com.assignment.pwc.complaintmanagement.repo.ComplaintRepository;
 import com.assignment.pwc.complaintmanagement.repo.ComplaintStatusRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -22,16 +28,18 @@ public class ComplaintControllerImpl<C extends Complaint> implements ComplaintCo
 
     private final ComplaintUtil complaintUtil;
     private final ComplaintRepository complaintRepository;
-    private final ComplaintStatusRepository complaintStatusRepository
-            ;
+    private final ComplaintStatusRepository complaintStatusRepository;
+    private final ComplaintJpaRepo complaintJpaRepo;
 
     public ComplaintControllerImpl(ComplaintRepository complaintRepository,
                                    ComplaintUtil complaintUtil,
-                                   ComplaintStatusRepository complaintStatusRepository){
+                                   ComplaintStatusRepository complaintStatusRepository,
+                                   ComplaintJpaRepo complaintJpaRepo){
 
         this.complaintRepository = complaintRepository;
         this.complaintUtil = complaintUtil;
         this.complaintStatusRepository = complaintStatusRepository;
+        this.complaintJpaRepo = complaintJpaRepo;
     }
 
     @Override
@@ -85,5 +93,27 @@ public class ComplaintControllerImpl<C extends Complaint> implements ComplaintCo
             this.complaintRepository.save(complaint);
         });
         return ResponseEntity.status(HttpStatus.CREATED).body("Updated successfully");
+    }
+
+    @Override
+    @GetMapping("/sorted/complaints")
+    public Map<String, List<C>> findAllComplaints(Sort sort) {
+        Map<String, List<C>> complaintByStatus = new HashMap<>();
+        complaintByStatus.put(ComplaintStatusType.PENDING.getName(), new ArrayList<>());
+        complaintByStatus.put(ComplaintStatusType.RESOLVED.getName(), new ArrayList<>());
+        complaintByStatus.put(ComplaintStatusType.DISMISSED.getName(), new ArrayList<>());
+
+        List<C> complaint = (List<C>) complaintJpaRepo.findAll(Sort.by(Sort.Order.by("complaintStatus")));
+        complaint.stream().forEach(complaintparam -> {
+            insertIntoMapList(complaintByStatus, complaintparam.getComplaintStatus().getCode(), complaintparam);
+        });
+
+        return complaintByStatus;
+
+    }
+    private void insertIntoMapList(Map<String, List<C>> map, String key, C item){
+        List<C> list = map.get(key);
+        list.add(item);
+        map.put(key,list);
     }
 }

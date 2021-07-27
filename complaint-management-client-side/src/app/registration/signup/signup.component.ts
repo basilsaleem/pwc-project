@@ -20,6 +20,6 @@ export class SignupComponent implements OnInit {
       return;
     }
     const authData = {email: forms.value.email, password: forms.value.password, role: 'user'};
-    this.authService.createUser(authData);
+    this.authService.createUser(authData, true);
   }
 }

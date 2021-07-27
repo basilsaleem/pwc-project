@@ -5,10 +5,12 @@ import com.assignment.pwc.complaintmanagement.controller.util.JwtGenerator;
 import com.assignment.pwc.complaintmanagement.controller.util.UserUtil;
 import com.assignment.pwc.complaintmanagement.entity.user.RoleType;
 import com.assignment.pwc.complaintmanagement.entity.user.User;
+import com.assignment.pwc.complaintmanagement.exception.DuplicateEntityException;
 import com.assignment.pwc.complaintmanagement.model.auth.JwtAuthResponse;
 import com.assignment.pwc.complaintmanagement.model.auth.LoginForm;
 import com.assignment.pwc.complaintmanagement.model.auth.UserDetailsImpl;
 import com.assignment.pwc.complaintmanagement.repo.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,7 +52,11 @@ public class UserControllerImpl<T extends User> implements UserController<T> {
     @PostMapping("/register")
     public ResponseEntity<JwtAuthResponse> registerByUsernameAndPassword(@Valid @RequestBody @NonNull LoginForm userInfo) {
 
-        userUtil.checkDuplicateEmail(userInfo.getEmail());
+        try{
+            userUtil.checkDuplicateEmail(userInfo.getEmail());
+        }catch(DuplicateEntityException e){
+            throw new RuntimeException(e);
+        }
         User user = userUtil.prepareUserForCreate(userInfo, RoleType.findByName(userInfo.getRole()));
         userRepository.save(user);
 

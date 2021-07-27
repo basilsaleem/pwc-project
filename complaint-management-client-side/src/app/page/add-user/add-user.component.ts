@@ -65,12 +65,12 @@ export class AddUserComponent implements OnInit, OnDestroy {
     }
     const userData: UserDataRequest = {email: this.form.value.email, password: this.form.value.password, role: 'user'};
 
-    this.authService.createUser(userData);
+    this.authService.createUser(userData, false);
 
     this.creationSubscriptionListener = this.authService.getUserCreationListener().subscribe(isCreated => {
       if (isCreated){
         this.dialog.close(true);
-        this.alertService.errorNotification('Created successfully');
+        this.alertService.successNotification('Created successfully');
       }else{
         this.alertService.errorNotification('E-mail address is reserved please try another email');
       }

@@ -73,13 +73,15 @@ export class AuthService{
     return this.accessToke;
   }
 
-  createUser(authData: UserDataRequest): void {
+  createUser(authData: UserDataRequest, doLoginAfter: boolean): void {
     // tslint:disable-next-line:max-line-length
     const signupEndpoint = registrationConfig.APP_ENDPOINT + registrationConfig.registration.API.VERSION + registrationConfig.registration.API.SIGN_UP;
     this.httpClient.post(signupEndpoint, authData)
       .subscribe((responseData: JwtAuthData)  => {
         this.userCreationListener.next(true);
-        this.doInternalLogin(responseData);
+        if (doLoginAfter){
+          this.doInternalLogin(responseData);
+        }
       }, error => {
         if (error.status === 409){
           this.userCreationListener.next(false);
@@ -114,7 +116,7 @@ export class AuthService{
 
   logout(): void{
     this.tokensCleanup();
-    this.router.navigate(['/']);
+    this.router.navigate(['/registration/login']);
   }
 
   private doInternalLogin(responseData: JwtAuthData): void {

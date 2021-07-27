@@ -19,6 +19,8 @@ export class ErrorInterceptor implements HttpInterceptor {
       }else  if ([ 500].indexOf(err.status) !== -1) {
         // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
         this.alertService.errorNotification('Internal Error');
+      }else if ([ 409].indexOf(err.status) !== -1){
+        this.alertService.errorNotification('Duplicate Email');
       }
 
       const error = err.error.message || err.statusText;

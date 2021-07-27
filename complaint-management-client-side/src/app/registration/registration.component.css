@@ -37,10 +37,11 @@
   background: #3f51b5;
   color:white;
 }
+
 .login-side > a:hover{
 
-  background: white;
-  color:black;
+  background: transparent;
+  color:white;
   text-decoration: none;
 }
 
@@ -52,9 +53,10 @@
 }
 .signup-side > a{
 
-  background: black;
-  color:white;
+  background: #f7f7f7;
+  color:black;
   text-decoration: none;
+  box-shadow: none;
 }
 .signup-side > a:hover{
   background: white;
